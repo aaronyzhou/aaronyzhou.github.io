@@ -1,0 +1,63 @@
+baseURL = 'https://example.org/'
+languageCode = 'en-us'
+title = 'Aaron Y Zhou'
+theme = 'typo'
+
+[taxonomies]
+tag = 'tags'
+
+[params]
+description = "Aaron's Website"
+showFooter = false
+
+# Appearance settings
+theme = 'auto'
+colorPalette = 'default'
+hideHeader = false
+
+# Intro on main page, content is markdown
+# homeIntroTitle = 'Home'
+homeIntroContent = """I am a senior software engineer based in Seattle specializing in building distributed systems.
+
+[I also perform magic.](https://aaronzmagic.com)
+
+This blog was built using [Hugo](gohugo.io) with a modified version of theme [tomfran/typo](https://github.com/tomfran/typo). This blog is currently hosted on GitHub pages.
+"""
+
+# Lists parameters
+paginationSize = 100
+listSummaries = true
+listDateFormat = 'Jan 2 2006'
+
+# Breadcrumbs
+[params.breadcrumbs]
+enabled = false
+showCurrentPage = false
+home = "Home"
+
+# Social icons
+[[params.social]]
+name = "linkedin"
+url = "https://www.linkedin.com/in/aaronyzhou/"
+
+[[params.social]]
+name = "github"
+url = "https://github.com/aaronyzhou"
+
+# Main menu pages
+[[params.menu]]
+name = "home"
+url = "/"
+
+[[params.menu]]
+name = "posts"
+url = "/posts"
+
+[[params.menu]]
+# name = "about"
+# url = "/about"
+
+# Syntax highlight on code blocks
+[markup]
+[markup.highlight]
+style = 'algol'
