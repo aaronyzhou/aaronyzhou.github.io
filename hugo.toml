@@ -3,6 +3,10 @@ languageCode = 'en-us'
 title = 'Aaron Y Zhou'
 theme = 'typo'
 
+[caches]
+  [caches.images]
+    dir = ':cacheDir/images'
+
 [taxonomies]
 tag = 'tags'
 
