@@ -331,7 +331,7 @@ footer a {
 }
 
 .single-content {
-  margin-bottom: 5rem;
+  margin-bottom: 0rem;
 }
 
 .single-tags {
@@ -345,7 +345,7 @@ footer a {
 /* Single pagination */
 
 .single-pagination {
-  margin-top: 3rem;
+  margin-top: 1rem;
   margin-bottom: 3rem;
 }
 

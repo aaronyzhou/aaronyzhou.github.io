@@ -1,3 +1,3 @@
-[aaronyzhou.com](http://aaronyzhou.com)
+[aaronyzhou.github.io](aaronyzhou.github.io)
 
 This is my website.
