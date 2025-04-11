@@ -1,7 +1,7 @@
 +++
 date = 2025-04-04
 title = 'First Time Seeing This Type of Email'
-tags=['jobs']
+tags = ['jobs']
 +++
 ![email](/image/application.png)
 

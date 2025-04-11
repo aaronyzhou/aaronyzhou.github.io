@@ -29,7 +29,7 @@ This blog was built using [Hugo](gohugo.io) with a modified version of the [tomf
 """
 
 # Lists parameters
-paginationSize = 100
+paginationSize = 10
 listSummaries = true
 listDateFormat = 'Jan 2 2006'
 
@@ -54,8 +54,8 @@ name = "home"
 url = "/"
 
 [[params.menu]]
-name = "posts"
-url = "/posts"
+name = "blog"
+url = "/blog"
 
 [[params.menu]]
 # name = "about"
