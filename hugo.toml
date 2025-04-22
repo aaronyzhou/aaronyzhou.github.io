@@ -23,8 +23,6 @@ hideHeader = false
 # homeIntroTitle = 'Home'
 homeIntroContent = """I am a senior software engineer based in Seattle specializing in backend development and building distributed systems.
 
-[I also perform magic.](https://aaronzmagic.com)
-
 This blog was built using [Hugo](gohugo.io) with a modified version of the [tomfran/typo](https://github.com/tomfran/typo) theme. This blog is currently hosted on GitHub pages.
 """
 
