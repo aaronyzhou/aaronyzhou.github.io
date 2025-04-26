@@ -2,6 +2,7 @@
 title =  'Java vs Javascript'
 date = 2025-03-25
 tags = ['programming']
+draft = 'true'
 +++
 Back when I was in college, about ten years ago, a recruiter posted a job description on the college job board that included the line 'Java, also known as javascript'. It got shared to the CS facebook group and we all made fun of it because Java and Javascript are two completely different programming languages.
 

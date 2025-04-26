@@ -1,6 +1,7 @@
 +++
 date = 2025-04-11
 title = 'Is AI Killing Resumes?'
+draft = 'true'
 +++
 Right now there are a bunch of tools that can rewrite your resume to match a job description. On the other side, there are also AI tools that pick out keywords from resumes. The entire process feels very silly. 
 

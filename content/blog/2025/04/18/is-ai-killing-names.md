@@ -1,6 +1,7 @@
 +++
 date = 2025-04-18
 title = 'Is AI Killing Names'
+draft = 'true'
 +++
 The name "Alexa" dipped in popularity in the late 2010s because of the Amazon Alexa. 
 

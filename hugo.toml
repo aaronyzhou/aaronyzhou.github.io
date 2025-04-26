@@ -22,9 +22,9 @@ hideHeader = false
 # Intro on main page, content is markdown
 # homeIntroTitle = 'Home'
 homeIntroContent = """I am a senior software engineer based in Seattle specializing in backend development and building distributed systems.
-
-This blog was built using [Hugo](gohugo.io) with a modified version of the [tomfran/typo](https://github.com/tomfran/typo) theme. This blog is currently hosted on GitHub pages.
 """
+#This blog was built using [Hugo](gohugo.io) with a modified version of the [tomfran/typo](https://github.com/tomfran/typo) theme. This blog is currently hosted on GitHub pages.
+
 
 # Lists parameters
 paginationSize = 10
@@ -52,8 +52,8 @@ name = "home"
 url = "/"
 
 [[params.menu]]
-name = "blog"
-url = "/blog"
+#name = "blog"
+#url = "/blog"
 
 [[params.menu]]
 # name = "about"

@@ -2,6 +2,7 @@
 date = 2025-04-04
 title = 'First Time Seeing This Type of Email'
 tags = ['jobs']
+draft = 'true'
 +++
 ![email](/image/application.png)
 

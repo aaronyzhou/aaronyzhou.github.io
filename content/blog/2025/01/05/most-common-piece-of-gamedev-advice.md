@@ -2,6 +2,7 @@
 title =  "The Most Common Piece of Gamedev Advice (And Why it's Wrong)"
 date = 2025-01-05
 tags = ['gamedev']
+draft = 'true'
 +++
 The most common gamedev advice I hear is to start small and build some really easy projects like Snake before tackling your dream game. 
 
