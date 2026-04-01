@@ -1,33 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Name Match Game</title>
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
-  <main class="app">
-    <h1>Name Match</h1>
-    <p class="instructions">
-      After shuffling, the number cards stay hidden — drag each name onto the slot for the number it started above. Then check your answer.
-    </p>
+---
+title: "Name Match Game"
+description: "Drag each name onto the slot for the number it started above, then check your answer."
+---
+<link rel="stylesheet" href="styles.css" />
+<main class="app">
+  <h1>Name Match</h1>
+  <p class="instructions">
+    After shuffling, the number cards stay hidden — drag each name onto the slot for the number it started above. Then check your answer.
+  </p>
 
-    <div class="rows" aria-live="polite">
-      <div class="row-label">Top</div>
-      <div id="top-row" class="row" role="list"></div>
-      <div class="row-label">Bottom</div>
-      <div id="bottom-row" class="row" role="list"></div>
-    </div>
+  <div class="rows" aria-live="polite">
+    <div class="row-label">Top</div>
+    <div id="top-row" class="row" role="list"></div>
+    <div class="row-label">Bottom</div>
+    <div id="bottom-row" class="row" role="list"></div>
+  </div>
 
-    <div class="controls">
-      <button type="button" id="btn-start" class="btn primary">Start</button>
-      <button type="button" id="btn-check" class="btn" disabled>Check</button>
-      <button type="button" id="btn-reset" class="btn">Reset</button>
-    </div>
+  <div class="controls">
+    <button type="button" id="btn-start" class="btn primary">Start</button>
+    <button type="button" id="btn-check" class="btn" disabled>Check</button>
+    <button type="button" id="btn-reset" class="btn">Reset</button>
+  </div>
 
-    <p id="status" class="status" role="status"></p>
-  </main>
-  <script src="script.js"></script>
-</body>
-</html>
+  <p id="status" class="status" role="status"></p>
+</main>
+<script src="script.js"></script>
