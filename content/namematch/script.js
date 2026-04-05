@@ -117,7 +117,8 @@
   /** @type {string[]} name at column i at game start (paired with number i+1) */
   let originalNames = [];
   let phase = "idle"; // idle | swapping | play
-  let draggedCard = null;
+  /** @type {{ card: HTMLElement, offsetX: number, offsetY: number, pointerId: number, placeholder: HTMLElement } | null} */
+  let pointerDrag = null;
   /** Bumped on Reset to cancel an in-flight shuffle */
   let swapRunId = 0;
 
@@ -275,93 +276,188 @@
     return slot.closest("#bottom-row .slot");
   }
 
-  function setupDnD() {
-    teardownDnD();
-
-    topRow.querySelectorAll(".card.name").forEach((card) => {
-      card.setAttribute("draggable", "true");
-      card.addEventListener("dragstart", onDragStart);
-      card.addEventListener("dragend", onDragEnd);
-    });
-
-    bottomRow.querySelectorAll(".slot").forEach((slot) => {
-      slot.addEventListener("dragover", onDragOver);
-      slot.addEventListener("dragleave", onDragLeave);
-      slot.addEventListener("drop", onDrop);
-    });
-  }
-
-  function teardownDnD() {
-    document.querySelectorAll(".card.name").forEach((card) => {
-      card.removeAttribute("draggable");
-      card.removeEventListener("dragstart", onDragStart);
-      card.removeEventListener("dragend", onDragEnd);
-      card.classList.remove("dragging");
-    });
-    bottomRow.querySelectorAll(".slot").forEach((slot) => {
-      slot.removeEventListener("dragover", onDragOver);
-      slot.removeEventListener("dragleave", onDragLeave);
-      slot.removeEventListener("drop", onDrop);
-      slot.classList.remove("drag-over", "invalid-drop");
-    });
-    draggedCard = null;
-  }
-
-  function onDragStart(e) {
-    if (phase !== "play") {
-      e.preventDefault();
-      return;
-    }
-    draggedCard = e.target.closest(".card.name");
-    if (!draggedCard) return;
-    draggedCard.classList.add("dragging");
-    e.dataTransfer.effectAllowed = "move";
-    e.dataTransfer.setData("text/plain", draggedCard.dataset.name || "");
-  }
-
-  function onDragEnd() {
-    if (draggedCard) draggedCard.classList.remove("dragging");
-    draggedCard = null;
+  function clearSlotHighlights() {
     bottomRow.querySelectorAll(".slot").forEach((s) => {
       s.classList.remove("drag-over", "invalid-drop");
     });
   }
 
-  function onDragOver(e) {
-    const slot = e.currentTarget;
-    if (!slotForBottomSlot(slot)) return;
-    e.preventDefault();
-    e.dataTransfer.dropEffect = "move";
-    slot.classList.add("drag-over");
+  /** @param {number} clientX @param {number} clientY */
+  function slotFromPoint(clientX, clientY) {
+    const el = document.elementFromPoint(clientX, clientY);
+    if (!el) return null;
+    const slot = el.closest("#bottom-row .slot");
+    return slot || null;
   }
 
-  function onDragLeave(e) {
-    const slot = e.currentTarget;
-    if (slot.contains(e.relatedTarget)) return;
-    slot.classList.remove("drag-over", "invalid-drop");
-  }
-
-  function onDrop(e) {
-    e.preventDefault();
-    const slot = e.currentTarget;
-    slot.classList.remove("drag-over");
-
-    if (phase !== "play" || !draggedCard) return;
-
+  function moveNameToSlot(card, slot) {
+    if (!card || !slot || !slotForBottomSlot(slot)) return false;
     const numCard = slot.querySelector(".card.number");
-    if (!numCard) return;
+    if (!numCard) return false;
 
     const existingName = slot.querySelector(".card.name");
-    const sourceSlot = draggedCard.parentElement;
+    const sourceSlot = card.parentElement;
 
-    if (existingName && existingName !== draggedCard) {
+    if (existingName && existingName !== card) {
       if (sourceSlot && sourceSlot.classList.contains("slot")) {
         sourceSlot.appendChild(existingName);
       }
     }
 
-    slot.appendChild(draggedCard);
+    slot.appendChild(card);
     setStatus("", "");
+    return true;
+  }
+
+  function abortPointerDrag() {
+    if (!pointerDrag) return;
+    const { card, pointerId, placeholder } = pointerDrag;
+    window.removeEventListener("pointermove", onPointerMoveWindow);
+    window.removeEventListener("pointerup", onPointerUpWindow);
+    window.removeEventListener("pointercancel", onPointerUpWindow);
+    try {
+      card.releasePointerCapture(pointerId);
+    } catch (_) {
+      /* already released */
+    }
+    if (placeholder && placeholder.parentNode) placeholder.remove();
+    clearSlotHighlights();
+    card.style.position = "";
+    card.style.left = "";
+    card.style.top = "";
+    card.style.width = "";
+    card.style.height = "";
+    card.style.zIndex = "";
+    card.style.pointerEvents = "";
+    card.style.margin = "";
+    card.classList.remove("dragging");
+    pointerDrag = null;
+  }
+
+  function onPointerMoveWindow(e) {
+    if (!pointerDrag || e.pointerId !== pointerDrag.pointerId) return;
+    const { card, offsetX, offsetY } = pointerDrag;
+    card.style.left = e.clientX - offsetX + "px";
+    card.style.top = e.clientY - offsetY + "px";
+
+    clearSlotHighlights();
+    const slot = slotFromPoint(e.clientX, e.clientY);
+    if (slot && slot.querySelector(".card.number")) {
+      slot.classList.add("drag-over");
+    }
+  }
+
+  /** @param {PointerEvent} e */
+  function onPointerUpWindow(e) {
+    if (!pointerDrag || e.pointerId !== pointerDrag.pointerId) return;
+    const { card, pointerId, placeholder } = pointerDrag;
+
+    window.removeEventListener("pointermove", onPointerMoveWindow);
+    window.removeEventListener("pointerup", onPointerUpWindow);
+    window.removeEventListener("pointercancel", onPointerUpWindow);
+
+    try {
+      card.releasePointerCapture(pointerId);
+    } catch (_) {
+      /* already released */
+    }
+
+    if (placeholder && placeholder.parentNode) placeholder.remove();
+    clearSlotHighlights();
+
+    if (e.type !== "pointercancel") {
+      const dropSlot = slotFromPoint(e.clientX, e.clientY);
+      if (dropSlot) moveNameToSlot(card, dropSlot);
+    }
+
+    card.style.position = "";
+    card.style.left = "";
+    card.style.top = "";
+    card.style.width = "";
+    card.style.height = "";
+    card.style.zIndex = "";
+    card.style.pointerEvents = "";
+    card.style.margin = "";
+    card.classList.remove("dragging");
+    pointerDrag = null;
+  }
+
+  /** @param {PointerEvent} e */
+  function onPointerDownName(e) {
+    if (phase !== "play" || pointerDrag) return;
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    const card = e.target.closest(".card.name");
+    if (!card) return;
+
+    e.preventDefault();
+
+    const rect = card.getBoundingClientRect();
+    const placeholder = document.createElement("div");
+    placeholder.setAttribute("aria-hidden", "true");
+    placeholder.className = "drag-placeholder";
+    placeholder.style.width = rect.width + "px";
+    placeholder.style.height = rect.height + "px";
+    placeholder.style.margin = "0 auto";
+    placeholder.style.flexShrink = "0";
+    card.parentElement.insertBefore(placeholder, card);
+
+    pointerDrag = {
+      card,
+      offsetX: e.clientX - rect.left,
+      offsetY: e.clientY - rect.top,
+      pointerId: e.pointerId,
+      placeholder,
+    };
+
+    card.classList.add("dragging");
+    card.style.boxSizing = "border-box";
+    card.style.position = "fixed";
+    card.style.left = rect.left + "px";
+    card.style.top = rect.top + "px";
+    card.style.width = rect.width + "px";
+    card.style.height = rect.height + "px";
+    card.style.zIndex = "1000";
+    card.style.pointerEvents = "none";
+    card.style.margin = "0";
+
+    card.setPointerCapture(e.pointerId);
+
+    window.addEventListener("pointermove", onPointerMoveWindow);
+    window.addEventListener("pointerup", onPointerUpWindow);
+    window.addEventListener("pointercancel", onPointerUpWindow);
+  }
+
+  function setupDnD() {
+    teardownDnD();
+
+    const rowsEl = document.querySelector(".rows");
+    if (rowsEl) rowsEl.classList.add("can-drag");
+
+    topRow.querySelectorAll(".card.name").forEach((card) => {
+      card.addEventListener("pointerdown", onPointerDownName);
+    });
+    bottomRow.querySelectorAll(".card.name").forEach((card) => {
+      card.addEventListener("pointerdown", onPointerDownName);
+    });
+  }
+
+  function teardownDnD() {
+    abortPointerDrag();
+
+    const rowsEl = document.querySelector(".rows");
+    if (rowsEl) rowsEl.classList.remove("can-drag");
+
+    topRow.querySelectorAll(".card.name").forEach((card) => {
+      card.removeEventListener("pointerdown", onPointerDownName);
+      card.classList.remove("dragging");
+    });
+    bottomRow.querySelectorAll(".card.name").forEach((card) => {
+      card.removeEventListener("pointerdown", onPointerDownName);
+      card.classList.remove("dragging");
+    });
+    bottomRow.querySelectorAll(".slot").forEach((slot) => {
+      slot.classList.remove("drag-over", "invalid-drop");
+    });
   }
 
   function checkAnswer() {

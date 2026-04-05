@@ -126,12 +126,14 @@ h1 {
   cursor: grab;
 }
 
-.card.name[draggable="true"]:active {
-  cursor: grabbing;
+.rows.can-drag .card.name {
+  touch-action: none;
 }
 
 .card.name.dragging {
-  opacity: 0.5;
+  opacity: 0.92;
+  cursor: grabbing;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
 }
 
 .card.face-down {
